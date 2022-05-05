@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.js"
+            integrity="sha512-n/4gHW3atM3QqRcbCn6ewmpxcLAHGaDjpEBu4xZd47N0W2oQ+6q7oc3PXstrJYXcbNU1OHdQ1T7pAP+gi5Yu8g=="
+            crossorigin="anonymous"
+        ></script>
+        <title>Document</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                text-decoration: none;
+            }
+            .items {
+                display: flex;
+                max-width: 960px;
+                height: 100vh;
+                overflow: hidden;
+                margin: auto;
+                flex-direction: column;
+            }
+            .item {
+                width: 100%;
+                height: 100vh;
+
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                margin: 20px 0;
+            }
+            .item > * {
+                margin: 10px 0;
+            }
+            .item img {
+                width: 500px;
+                height: auto;
+            }
+            .item label {
+                font-size: 20px;
+                font-weight: bold;
+                margin: 0 5px;
+            }
+            .item button {
+                width: 80px;
+                height: 30px;
+                border-radius: 50px;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="items">
+            <div class="item">
+                <h1>Quenstion</h1>
+                <h1 class="num">1</h1>
+                <img src="./design/1.png" alt="" />
+                <div class="ans">
+                    <label><input type="radio" name="team" value="10" /> 大致同意</label>
+                    <label><input type="radio" name="team" value="0" /> 大致不同意</label>
+                </div>
+                <button class="nextPage">next</button>
+            </div>
+        </div>
+    </body>
+    <script>
+        let totalType = [
+            {
+                type: 'design',
+                total: 2,
+            },
+            {
+                type: 'team',
+                total: 3,
+            },
+            {
+                type: 'work',
+                total: 2,
+            },
+        ];
+        //預設第一個出現的是design第一張==>11
+
+        $('.nextPage').on('click', function () {
+            let ans = $('input[name="team"]:checked').val();
+            if (ans == null) {
+                alert('請填寫答案');
+            } else {
+                randomQuestion();
+            }
+        });
+        let appear = ['11'];
+        function randomQuestion() {
+            let questionNum = Math.floor(Math.random() * totalType.length); //隨機選第i個type
+            let type = totalType[questionNum]['type']; //得到 type
+            let typeNum = totalType[questionNum]['total']; // 得到 type總共有幾張圖片
+            let imgNum = Math.floor(Math.random() * typeNum + 1); //隨機選第i個image
+
+            let appearNum = typeNum + '' + imgNum;
+            console.log(appear);
+            if (appear.indexOf(appearNum) == -1) {
+                appear.push(appearNum);
+                $('.num').text($('.num').text() * 1 + 1);
+                $('img').attr('src', `./${type}/${imgNum}.png`);
+            } else {
+                questionNum = Math.floor(Math.random() * totalType.length); //隨機選第i個type
+                type = totalType[questionNum]['type']; //得到 type
+                typeNum = totalType[questionNum]['total']; // 得到 type總共有幾張圖片
+                imgNum = Math.floor(Math.random() * typeNum + 1); //隨機選第i個image
+            }
+        }
+    </script>
+</html>
