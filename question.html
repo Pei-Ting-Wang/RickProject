@@ -92,14 +92,15 @@
                 randomQuestion();
             }
         });
-        let appear = ['11'];
+        let appear = ['01'];
         function randomQuestion() {
             let questionNum = Math.floor(Math.random() * totalType.length); //隨機選第i個type
+            console.log(questionNum);
             let type = totalType[questionNum]['type']; //得到 type
             let typeNum = totalType[questionNum]['total']; // 得到 type總共有幾張圖片
             let imgNum = Math.floor(Math.random() * typeNum + 1); //隨機選第i個image
 
-            let appearNum = typeNum + '' + imgNum;
+            let appearNum = questionNum + '' + imgNum;
             console.log(appear);
             if (appear.indexOf(appearNum) == -1) {
                 appear.push(appearNum);
