@@ -58,7 +58,7 @@
             <div class="item">
                 <h1>Quenstion</h1>
                 <h1 class="num">1</h1>
-                <img src="./design/1.png" alt="" />
+                <img src="./design/0.png" alt="" />
                 <div class="ans">
                     <label><input type="radio" name="team" value="10" /> 大致同意</label>
                     <label><input type="radio" name="team" value="0" /> 大致不同意</label>
@@ -70,47 +70,47 @@
     <script>
         let totalType = [
             {
+                //預設出現第一張,所以圖片總數量要扣1張
                 type: 'design',
-                total: 2,
+                total: [...Array(1).keys()].map((i) => i + 1),
             },
             {
                 type: 'team',
-                total: 3,
+                total: [...Array(3).keys()],
             },
             {
                 type: 'work',
-                total: 2,
+                total: [...Array(2).keys()],
             },
         ];
-        //預設第一個出現的是design第一張==>11
+        let totalPicNum = 0;
+        totalType.forEach((item) => {
+            totalPicNum = totalPicNum + item['total'].length;
+        });
 
         $('.nextPage').on('click', function () {
-            let ans = $('input[name="team"]:checked').val();
+            let ans = $('input:checked').val();
             if (ans == null) {
                 alert('請填寫答案');
+            } else if ($('.num').text() == totalPicNum + 1) {
+                alert('題庫已都完成');
             } else {
                 randomQuestion();
             }
         });
-        let appear = ['01'];
-        function randomQuestion() {
-            let questionNum = Math.floor(Math.random() * totalType.length); //隨機選第i個type
-            console.log(questionNum);
-            let type = totalType[questionNum]['type']; //得到 type
-            let typeNum = totalType[questionNum]['total']; // 得到 type總共有幾張圖片
-            let imgNum = Math.floor(Math.random() * typeNum + 1); //隨機選第i個image
 
-            let appearNum = questionNum + '' + imgNum;
-            console.log(appear);
-            if (appear.indexOf(appearNum) == -1) {
-                appear.push(appearNum);
-                $('.num').text($('.num').text() * 1 + 1);
-                $('img').attr('src', `./${type}/${imgNum}.png`);
-            } else {
-                questionNum = Math.floor(Math.random() * totalType.length); //隨機選第i個type
-                type = totalType[questionNum]['type']; //得到 type
-                typeNum = totalType[questionNum]['total']; // 得到 type總共有幾張圖片
-                imgNum = Math.floor(Math.random() * typeNum + 1); //隨機選第i個image
+        function randomQuestion() {
+            let questionNum = Math.floor(Math.random() * totalType.length);
+            let type = totalType[questionNum]['type'];
+            let typeNum = totalType[questionNum]['total'].length;
+            $('.num').text($('.num').text() * 1 + 1);
+            $('input').attr('name', type);
+            $('input').prop('checked', false);
+            let display = Math.floor(Math.random() * typeNum); //0
+            $('img').attr('src', `./${type}/${totalType[questionNum]['total'][display]}.png`);
+            totalType[questionNum]['total'].splice(display, 1);
+            if (totalType[questionNum]['total'].length == 0) {
+                totalType.splice(questionNum, 1);
             }
         }
     </script>
