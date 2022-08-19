@@ -64,10 +64,14 @@
                     <label><input type="radio" name="team" value="0" /> 大致不同意</label>
                 </div>
                 <button class="nextPage">next</button>
+                <button class="hi" method="GET">hi</button>
             </div>
         </div>
     </body>
     <script>
+        $('.hi').on('click',()=>{
+            fetch('http://localhost:3000/data').then(res=> res.json()).then(data=>console.log(data));
+        })
         let totalType = [
             {
                 //預設出現第一張,所以圖片總數量要扣1張
