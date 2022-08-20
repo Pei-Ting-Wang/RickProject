@@ -61,6 +61,7 @@
                 graphData.push(data.score.independent);
                 graphData.push(data.score.outgoing);
                 graphData.push(data.score.careful);
+                //****************加測驗類型********** graphData.push(data.score.檔案名稱); 檔案名稱 aaa
                 //載入雷達圖
                 Chart.defaults.global.legend.display = false;
                 Chart.defaults.global.defaultFontColor = 'rgba(0,0,74, 1)';
@@ -87,7 +88,8 @@
 
                 //CreateData
                 chartRadarData = {
-                    //設定標籤
+                    //設定雷達圖類型
+                    // ********************************************************
                     labels: ['設計/推廣', '團隊精神', '文書', '獨立作業', '外向/溝通', '細心'],
                     datasets: [
                         {

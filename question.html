@@ -90,6 +90,7 @@
     <script>
         let nowPicType = 'design';
         //中括號裡的變數要和資料夾相同 順序要跟下面 totalType 變數裡的一樣
+        //score************************************************************
         let score = {
             design: 0,
             team: 0,
@@ -102,6 +103,7 @@
         // 1. 圖片設定: 變數: totalType
         // type:測驗類型 => 需要跟目錄資料夾名稱相同
         // ...Array(數字) 數字代表這個測驗類型的資料夾有幾張圖片
+        //totalType************************************************************
         let totalType = [
             {
                 //預設出現第一張,所以圖片總數量要扣1張
@@ -134,14 +136,14 @@
         // 2-1
         // 目前設定的是資料夾有幾張就有幾題,因為預設會出現1張,所以要10張變數就要減1 設 9張
         // 這種方式只能保證沒有重複出現題目,"但不保證每個類型的題目數量是平均的",所以...
-        let totalPicNum = 9;
+        let totalPicNum = 0;
         // 2-2
         // (**建議是用這個方式跑題目**) 因為可以利用修改資料夾圖片數量,來彈性調整想要哪類型的題目比較多,也就是你資料夾有幾張就有幾題題目
         // step1:上面的為 0 => let totalPicNum=0
         // step2 下面三行拿掉 "//"
-        // totalType.forEach((item) => {
-        //     totalPicNum = totalPicNum + item['total'].length;
-        // });
+        totalType.forEach((item) => {
+            totalPicNum = totalPicNum + item['total'].length;
+        });
 
         // 3. random 題目
         $('.nextPage').on('click', function () {
