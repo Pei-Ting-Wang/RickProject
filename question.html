@@ -38,7 +38,7 @@
                 margin: 10px 0;
             }
             .item img {
-                width: 500px;
+                width: 400px;
                 height: auto;
             }
             .item label {
@@ -46,10 +46,30 @@
                 font-weight: bold;
                 margin: 0 5px;
             }
+
             .item button {
-                width: 80px;
-                height: 30px;
-                border-radius: 50px;
+                box-shadow: 3px 4px 0px 0px #c7d2db;
+                background: linear-gradient(to bottom, #2a8beb 5%, #0f83f7 100%);
+                background-color: #2a8beb;
+                border-radius: 5px;
+                border: 1px solid #6f96bd;
+                display: inline-block;
+                cursor: pointer;
+                color: #ffffff;
+                font-family: Arial;
+                font-size: 17px;
+                font-weight: bold;
+                padding: 12px 44px;
+                text-decoration: none;
+                text-shadow: 0px 1px 0px #528ecc;
+            }
+            .item button:hover {
+                background: linear-gradient(to bottom, #0f83f7 5%, #2a8beb 100%);
+                background-color: #0f83f7;
+            }
+            .item button:active {
+                position: relative;
+                top: 1px;
             }
         </style>
     </head>
@@ -60,18 +80,28 @@
                 <h1 class="num">1</h1>
                 <img src="./design/0.png" alt="" />
                 <div class="ans">
-                    <label><input type="radio" name="team" value="10" /> 大致同意</label>
+                    <label><input type="radio" name="team" value="1" /> 大致同意</label>
                     <label><input type="radio" name="team" value="0" /> 大致不同意</label>
                 </div>
-                <button class="nextPage">next</button>
-                <button class="hi" method="GET">hi</button>
+                <button class="nextPage">下一題 ＞</button>
             </div>
         </div>
     </body>
     <script>
-        $('.hi').on('click',()=>{
-            fetch('http://localhost:3000/data').then(res=> res.json()).then(data=>console.log(data));
-        })
+        let nowPicType = 'design';
+        //中括號裡的變數要和資料夾相同 順序要跟下面 totalType 變數裡的一樣
+        let score = {
+            design: 0,
+            team: 0,
+            work: 0,
+            independent: 0,
+            outgoing: 0,
+            careful: 0,
+        };
+
+        // 1. 圖片設定: 變數: totalType
+        // type:測驗類型 => 需要跟目錄資料夾名稱相同
+        // ...Array(數字) 數字代表這個測驗類型的資料夾有幾張圖片
         let totalType = [
             {
                 //預設出現第一張,所以圖片總數量要扣1張
@@ -86,19 +116,51 @@
                 type: 'work',
                 total: [...Array(2).keys()],
             },
+            {
+                type: 'independent',
+                total: [...Array(2).keys()],
+            },
+            {
+                type: 'outgoing',
+                total: [...Array(2).keys()],
+            },
+            {
+                type: 'careful',
+                total: [...Array(2).keys()],
+            },
         ];
-        let totalPicNum = 0;
-        totalType.forEach((item) => {
-            totalPicNum = totalPicNum + item['total'].length;
-        });
 
+        // 2. 題目要幾題: 變數 totalPicNum
+        // 2-1
+        // 目前設定的是資料夾有幾張就有幾題,因為預設會出現1張,所以要10張變數就要減1 設 9張
+        // 這種方式只能保證沒有重複出現題目,"但不保證每個類型的題目數量是平均的",所以...
+        let totalPicNum = 9;
+        // 2-2
+        // (**建議是用這個方式跑題目**) 因為可以利用修改資料夾圖片數量,來彈性調整想要哪類型的題目比較多,也就是你資料夾有幾張就有幾題題目
+        // step1:上面的為 0 => let totalPicNum=0
+        // step2 下面三行拿掉 "//"
+        // totalType.forEach((item) => {
+        //     totalPicNum = totalPicNum + item['total'].length;
+        // });
+
+        // 3. random 題目
         $('.nextPage').on('click', function () {
-            let ans = $('input:checked').val();
-            if (ans == null) {
+            let ans = $('input:checked').val() * 1;
+            if ($('input:checked').val() == null) {
                 alert('請填寫答案');
             } else if ($('.num').text() == totalPicNum + 1) {
-                alert('題庫已都完成');
+                fetch('./testresult', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        score: score,
+                    }),
+                });
+                window.location.replace('./radar');
             } else {
+                score[nowPicType] = score[nowPicType] + ans;
                 randomQuestion();
             }
         });
@@ -106,6 +168,7 @@
         function randomQuestion() {
             let questionNum = Math.floor(Math.random() * totalType.length);
             let type = totalType[questionNum]['type'];
+            nowPicType = type;
             let typeNum = totalType[questionNum]['total'].length;
             $('.num').text($('.num').text() * 1 + 1);
             $('input').attr('name', type);

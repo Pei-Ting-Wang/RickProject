@@ -1,83 +1,114 @@
-<html>
-<head>
-<meta name="viewport" content="initial-scale = 1, user-scalable = no" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
-<body>
-	<div class="chartRadarDiv" style="height:100%" >
-		<canvas id="chartRadar" style="height:50vh; width:50vw"></canvas>
-	</div>
-	
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
+    </head>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            text-decoration: none;
+        }
+        .chartRadarDiv {
+            display: flex;
+            max-width: 960px;
+            height: 100vh;
+            overflow: hidden;
+            margin: auto;
+            flex-direction: column;
+        }
 
-	<script type="text/javascript">
-		
-	//定義變數
-	var chartRadarDOM;
-	var chartRadarData;
-	var chartRadarOptions;
-	
-    	//載入雷達圖
-	Chart.defaults.global.legend.display = false;
-	Chart.defaults.global.defaultFontColor = 'rgba(0,0,74, 1)';
-	chartRadarDOM = document.getElementById("chartRadar");
-	chartRadarData;
-	chartRadarOptions = 
-	{
-		scale: 
-		{
-			ticks: 
-			{
-				fontSize: 16,
-				beginAtZero: true,
-				maxTicksLimit: 7,
-				min:0,
-				max:100
-			},
-			pointLabels: 
-			{
-				fontSize: 25,
-				color: '#0044BB'
-			},
-			gridLines: 
-			{
-				color: '#009FCC'
-			}
-		}
-	};
-	
-	console.log("---------Rader Data--------");
-	var graphData =new Array();
-	graphData.push(100);
-	graphData.push(40);
-	graphData.push(65);
-	graphData.push(20);
-	graphData.push(97);
-	
-	
-	console.log("--------Rader Create-------------");
-	console.log(graphData);
-		
-	//CreateData
-	chartRadarData = {
-    		labels: ['STR', 'CON', 'INT', 'WIS', 'CHA'],
-		datasets: [{
-    			label: "Skill Level",
-			backgroundColor: "rgba(17, 34, 51,0.8)",
-			borderColor: "rgba(63,63,74,.8)",
-			pointBackgroundColor: "rgba(63,63,74,1)",
-   			 pointBorderColor: "rgba(0,0,0,0)",
-			pointHoverBackgroundColor: "#fff",
-			pointHoverBorderColor: "rgba(0,0,0,0.3)",
-			pointBorderWidth: 5,
-			data: graphData}]
-	};
-		
-	//Draw
-	var chartRadar = new Chart(chartRadarDOM, {
-		type: 'radar',
-		data: chartRadarData,
-		options: chartRadarOptions
-	});
-	</script>
-</body>
+        h1 {
+            text-align: center;
+            margin: 0 10px;
+            padding: 10px;
+        }
+        #chartRadar {
+            width: 100%;
+            height: 100vh;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+    </style>
+    <body>
+        <div class="chartRadarDiv">
+            <h1>測驗結果</h1>
+            <canvas id="chartRadar"></canvas>
+        </div>
+    </body>
+    <script type="text/javascript">
+        fetch('./testresult')
+            .then((res) => res.json())
+            .then((data) => {
+                //定義變數
+                var chartRadarDOM;
+                var chartRadarData;
+                var chartRadarOptions;
+                var graphData = new Array();
+                // 資料夾名稱改了這邊要改例如:desgin資料夾名稱改成aaa 這裡就要改成 data.scroe.aaa
+                // 順序要跟question設定score變數的順序一 樣
+                graphData.push(data.score.design);
+                graphData.push(data.score.team);
+                graphData.push(data.score.work);
+                graphData.push(data.score.independent);
+                graphData.push(data.score.outgoing);
+                graphData.push(data.score.careful);
+                //載入雷達圖
+                Chart.defaults.global.legend.display = false;
+                Chart.defaults.global.defaultFontColor = 'rgba(0,0,74, 1)';
+                chartRadarDOM = document.getElementById('chartRadar');
+                chartRadarData;
+                chartRadarOptions = {
+                    scale: {
+                        ticks: {
+                            fontSize: 20,
+                            beginAtZero: true,
+                            maxTicksLimit: 5,
+                            min: 0,
+                            max: Math.max(...graphData),
+                        },
+                        pointLabels: {
+                            fontSize: 20,
+                            color: '#0044BB',
+                        },
+                        gridLines: {
+                            color: '#009FCC',
+                        },
+                    },
+                };
+
+                //CreateData
+                chartRadarData = {
+                    //設定標籤
+                    labels: ['設計/推廣', '團隊精神', '文書', '獨立作業', '外向/溝通', '細心'],
+                    datasets: [
+                        {
+                            label: 'Skill Level',
+                            backgroundColor: 'rgba(17, 34, 51,0.8)',
+                            borderColor: 'rgba(63,63,74,.8)',
+                            pointBackgroundColor: 'rgba(63,63,74,1)',
+                            pointBorderColor: 'rgba(0,0,0,0)',
+                            pointHoverBackgroundColor: '#fff',
+                            pointHoverBorderColor: 'rgba(0,0,0,0.3)',
+                            pointBorderWidth: 10,
+                            data: graphData,
+                        },
+                    ],
+                };
+                //Draw
+                var chartRadar = new Chart(chartRadarDOM, {
+                    type: 'radar',
+                    data: chartRadarData,
+                    options: chartRadarOptions,
+                });
+            });
+    </script>
 </html>
